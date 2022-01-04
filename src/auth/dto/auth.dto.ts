@@ -1,14 +1,19 @@
-import { IsEmail, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 
 export class AuthDTO {
+  @IsOptional()
+  @IsNumber()
   id?: number;
   @IsNotEmpty()
-  fullName?: string;
+  firstName?: string;
   @IsNotEmpty()
-  @IsNumber()
+  lastName?: string;
+  @IsNotEmpty()
   phone?: number;
   @IsEmail()
   email?: string;
-  profile?: string;
+  @IsOptional()
+  imagePath?: string;
+  @IsOptional()
   token?: string;
 }
