@@ -14,5 +14,6 @@ export class AuthDTO {
   email?: string;
   @IsOptional()
   imagePath?: string;
+  @IsOptional()
   password?: string
 }
