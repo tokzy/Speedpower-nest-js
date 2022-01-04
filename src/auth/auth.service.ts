@@ -44,7 +44,7 @@ export class AuthService {
   }
 
   async validateUser(email: string, password: string): Promise<AuthDTO> {
-    return this.userEntityRepository
+    return await this.userEntityRepository
       .findOne(
         { email },
         {
@@ -60,5 +60,14 @@ export class AuthService {
       .catch((err) => {
         return err;
       });
+  }
+
+  async login(user: AuthDTO): Promise<string> {
+    const { email, password } = user;
+    return await this.validateUser(email, password).then((user) => {
+      if (user) {
+        return this.jwtservice.signAsync({ user });
+      }
+    });
   }
 }
