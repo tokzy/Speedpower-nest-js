@@ -7,8 +7,12 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post()
-  async Login(@Body() body: AuthDTO): Promise<string> {
-    return this.authService.login(body);
+  async Login(
+    @Body() body: { email: string; password: string },
+  ): Promise<{ token: string }> {
+    return this.authService.login(body).then((token) => {
+      return { token: token };
+    });
   }
 
   @Post('register')

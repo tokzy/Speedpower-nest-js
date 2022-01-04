@@ -51,10 +51,17 @@ export class AuthService {
           select: ['id', 'firstName', 'lastName', 'email', 'password', 'phone'],
         },
       )
-      .then((results) => {
-        if (bcrypt.compare(password, results.password)) {
-          delete results.password;
-          return results;
+      .then(async (results) => {
+        if (results) {
+          return await bcrypt
+            .compare(password, results.password)
+            .then((isValidpassword) => {
+              if (isValidpassword == true) {
+                delete results.password;
+                return results;
+              } else {
+              }
+            });
         }
       })
       .catch((err) => {
