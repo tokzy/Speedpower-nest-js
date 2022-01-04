@@ -1,4 +1,4 @@
-## SpeedPower
+## SpeedPower Version 2
 
 <p align="center">Electricity Vending Application System</p>
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
