@@ -9,11 +9,10 @@ export class AuthDTO {
   @IsNotEmpty()
   lastName?: string;
   @IsNotEmpty()
-  phone?: number;
+  phone?: string;
   @IsEmail()
   email?: string;
   @IsOptional()
   imagePath?: string;
-  @IsOptional()
-  token?: string;
+  password?: string
 }
