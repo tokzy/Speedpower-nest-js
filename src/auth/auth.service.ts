@@ -27,6 +27,9 @@ export class AuthService {
         phone,
         email,
         password,
+      }).then((user) => {
+        delete user.password;
+        return user;
       });
     });
   }
