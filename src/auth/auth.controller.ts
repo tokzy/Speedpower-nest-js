@@ -4,11 +4,11 @@ import { AuthDTO } from './dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService:AuthService){}
 
   @Post()
-  async Login(@Body() body: AuthDTO): Promise<AuthDTO> {
-    return body;
+  async Login(@Body() body: AuthDTO): Promise<string> {
+    return this.authService.login(body);
   }
 
   @Post('register')
