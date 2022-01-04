@@ -62,6 +62,7 @@ export class AuthService {
               } else {
               }
             });
+        } else {
         }
       })
       .catch((err) => {
