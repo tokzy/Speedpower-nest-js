@@ -15,5 +15,5 @@ export class AuthDTO {
   @IsOptional()
   imagePath?: string;
   @IsOptional()
-  password?: string
+  password?: string;
 }

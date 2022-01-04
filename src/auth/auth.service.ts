@@ -19,24 +19,46 @@ export class AuthService {
   }
 
   public async registerAccount(user: AuthDTO): Promise<AuthDTO> {
-    const { firstName, lastName, email,phone ,password } = user;
-    return await this.hashPassword(password).then((password) => {
-      return this.userEntityRepository.save({
-        firstName,
-        lastName,
-        phone,
-        email,
-        password,
-      }).then((user) => {
-        delete user.password;
-        return user;
+    const { firstName, lastName, email, phone, password } = user;
+    return await this.hashPassword(password)
+      .then((password) => {
+        return this.userEntityRepository
+          .save({
+            firstName,
+            lastName,
+            phone,
+            email,
+            password,
+          })
+          .then((user) => {
+            delete user.password;
+            return user;
+          })
+          .catch((err) => {
+            return err;
+          });
+      })
+      .catch((err) => {
+        return err;
       });
-    });
   }
 
-  
-
-
-
-
+  async validateUser(email: string, password: string): Promise<AuthDTO> {
+    return this.userEntityRepository
+      .findOne(
+        { email },
+        {
+          select: ['id', 'firstName', 'lastName', 'email', 'password', 'phone'],
+        },
+      )
+      .then((results) => {
+        if (bcrypt.compare(password, results.password)) {
+          delete results.password;
+          return results;
+        }
+      })
+      .catch((err) => {
+        return err;
+      });
+  }
 }
