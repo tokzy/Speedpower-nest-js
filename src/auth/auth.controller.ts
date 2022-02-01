@@ -1,22 +1,24 @@
 import { Body, Controller, Post } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import { AuthDTO } from './dto/auth.dto';
+import { RegisterUserDto } from './dto/auth.dto';
+import { UserLoginDto } from './dto/login.dto';
+import { UserEntity } from './entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  async Login(
-    @Body() body: { email: string; password: string },
-  ): Promise<{ token: string }> {
-    return this.authService.login(body).then((token) => {
-      return { token: token };
-    });
+  @Post('login')
+  login(@Body() user: UserLoginDto): Observable<{ token: string }> {
+    return this.authService
+      .login(user)
+      .pipe(map((jwt: string) => ({ token: jwt })));
   }
 
   @Post('register')
-  async Register(@Body() body: AuthDTO): Promise<AuthDTO> {
+  async Register(@Body() body: RegisterUserDto): Promise<UserEntity> {
     return this.authService.registerAccount(body);
   }
 }

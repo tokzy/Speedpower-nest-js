@@ -8,7 +8,16 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot(),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: '127.0.0.1',
+      port: 5432,
+      username: 'postgres',
+      password: 'jehovah205',
+      database: 'speedpowernest',
+      autoLoadEntities: true,
+      synchronize: true,
+    }),
     AuthModule,
   ],
   controllers: [],
