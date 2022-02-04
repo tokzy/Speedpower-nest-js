@@ -1,1 +1,4 @@
-export const AuthService = jest.fn().mockReturnValue({});
+export const AuthService = jest.fn().mockReturnValue({
+
+
+});

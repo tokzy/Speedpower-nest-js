@@ -18,8 +18,8 @@ export class UserEntity {
   email: string;
 
   @Column({ nullable: true })
-  imagePath: string;
+  imagePath?: string;
 
   @Column({ select: false })
-  password: string;
+  password?: string;
 }
