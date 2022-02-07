@@ -6,8 +6,6 @@ import { UserEntity } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { RegisterUserDto } from './dto/auth.dto';
 import { UserLoginDto } from './dto/login.dto';
-import { from, Observable } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
 import { isEmpty } from 'lodash';
 import * as fs from 'fs/promises';
 import * as randstring from 'randomstring';
@@ -95,9 +93,12 @@ export class AuthService {
     }
   }
 
-  public validateUser(email: string, password: string): Observable<UserEntity> {
-    return from(
-      this.userEntityRepository.findOne(
+  public async validateUser(
+    email: string,
+    password: string,
+  ): Promise<UserEntity> {
+    return await this.userEntityRepository
+      .findOne(
         { email },
         {
           select: [
@@ -110,17 +111,17 @@ export class AuthService {
             'phone',
           ],
         },
-      ),
-    ).pipe(
-      switchMap((user: UserEntity) => {
+      )
+      .then(async (user) => {
         if (!user) {
           throw new HttpException(
             'Invalid Credentials',
             HttpStatus.UNAUTHORIZED,
           );
         } else {
-          return from(bcrypt.compare(password, user.password)).pipe(
-            map((isValidPassword: boolean) => {
+          return await bcrypt
+            .compare(password, user.password)
+            .then((isValidPassword) => {
               if (isValidPassword) {
                 delete user.password;
                 if (!isEmpty(user.imagePath)) {
@@ -133,26 +134,19 @@ export class AuthService {
                   HttpStatus.UNAUTHORIZED,
                 );
               }
-            }),
-          );
+            });
         }
-      }),
-    );
+      });
   }
 
-  public login(user: UserLoginDto): Observable<string> {
+  public async login(user: UserLoginDto): Promise<string> {
     const { email, password } = user;
-    return this.validateUser(email, password).pipe(
-      switchMap((user: UserEntity) => {
-        if (user) {
-          return from(this.jwtservice.signAsync({ user }));
-        } else {
-          throw new HttpException(
-            'Invalid Credentials',
-            HttpStatus.UNAUTHORIZED,
-          );
-        }
-      }),
-    );
+    return this.validateUser(email, password).then((user) => {
+      if (user) {
+        return this.jwtservice.signAsync({ user });
+      } else {
+        throw new HttpException('Invalid Credentials', HttpStatus.UNAUTHORIZED);
+      }
+    });
   }
 }
